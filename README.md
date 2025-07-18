@@ -2,22 +2,29 @@
 OCPP server implementation based on spring-boot
 
 
-## Requriement (preparing)
+## Requriement
 
-ocpp-boot 
+```xml
+<dependency>
+	<groupId>io.u2ware</groupId>
+	<artifactId>ocpp-boot</artifactId>
+	<version>0.9.9</version>
+</dependency>
+```
+   
+> [ocpp-boot](https://github.com/u2ware/ocpp-boot?tab=readme-ov-file#install) 
+    
 
-
-
-## Usage (preparing)
+## Usage
 
 ```bash
 ./mvnw springboot:run
 ```
 
-Admin UI
-http://localhost:8081
+> http://localhost:8081
 
-# @EnableOcppServer (preparing)
+
+# @EnableOcppServer 
 
 ```java
 @SpringBootApplication 
@@ -38,7 +45,7 @@ public class Application {
 (2) URI. ocpp clients can connect via URL.(ws://localhost:18080/myocpp)
 
 
-# OCPP Specification (preparing)
+# OCPP Specification 
 
 If you want to customize a Usecase, implement the corresponding server handler.
 
@@ -48,7 +55,6 @@ If you want to customize a Usecase, implement the corresponding server handler.
 ```
 
 # Test without I/O (preparing)
-
 
 
 
