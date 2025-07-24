@@ -48,7 +48,7 @@ public class Application {
 
 2. version. V1_6, V2_0_1, V2_1
 
-(3) URI. ocpp clients can connect via URL.(ws://localhost:18080/yourocpp)
+3. URI. ocpp clients can connect via URL.(ws://localhost:18080/yourocpp)
 
 
 

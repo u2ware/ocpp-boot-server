@@ -15,7 +15,7 @@ public class FirmwareStatusNotification implements ServerHandler {
 
     protected Log logger = LogFactory.getLog(getClass());
     
-    protected @Autowired SpecificationSendingOperations ocppOperations;
+    protected @Autowired(required = false) SpecificationSendingOperations ocppOperations;
 
     @Override
     public FirmwareStatusNotificationResponse receivedFirmwareStatusNotificationRequest(String id,

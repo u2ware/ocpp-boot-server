@@ -17,7 +17,7 @@ public class RemoteStopTransaction implements ServerHandler {
 
     protected Log logger = LogFactory.getLog(getClass());
     
-    protected @Autowired SpecificationSendingOperations ocppOperations;
+    protected @Autowired(required = false) SpecificationSendingOperations ocppOperations;
 
     @Override
     public RemoteStopTransactionRequest sendRemoteStopTransactionRequest(String id, Map<String, Object> req) {

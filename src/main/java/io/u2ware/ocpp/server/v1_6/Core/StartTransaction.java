@@ -8,25 +8,23 @@ import org.springframework.util.ObjectUtils;
 
 import io.u2ware.ocpp.v1_6.exception.ErrorCode;
 import io.u2ware.ocpp.v1_6.exception.ErrorCodes;
-import io.u2ware.ocpp.v1_6.messaging.Specification;
-import io.u2ware.ocpp.v1_6.messaging.SpecificationAction;
 import io.u2ware.ocpp.v1_6.messaging.SpecificationSendingOperations;
 import io.u2ware.ocpp.v1_6.model.*;
 import io.u2ware.ocpp.v1_6.usecase.StartTransaction.ServerHandler;
 
-@Component
-public class StartTransaction implements ServerHandler {
+@Component // 1
+public class StartTransaction implements ServerHandler { // 2
 
     protected Log logger = LogFactory.getLog(getClass());
     
-    protected @Autowired SpecificationSendingOperations ocppOperations;
+    protected @Autowired(required = false) SpecificationSendingOperations ocppOperations;
 
     @Override
     public StartTransactionResponse receivedStartTransactionRequest(String id, StartTransactionRequest req) {
         logger.info(comment(this, Comment.receivedStartTransactionRequest, id));
 
         if(ObjectUtils.isEmpty(req)) {
-            throw ErrorCodes.GenericError.exception("my error message");
+            throw ErrorCodes.GenericError.exception("your error message"); // 3
         }
         return StartTransactionResponse.builder().build();
     }
