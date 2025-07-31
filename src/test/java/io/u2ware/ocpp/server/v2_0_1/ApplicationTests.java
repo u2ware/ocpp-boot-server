@@ -20,7 +20,7 @@ import io.u2ware.ocpp.v2_0_1.messaging.ChargingStation;
 import io.u2ware.ocpp.v2_0_1.messaging.ChargingStationCommand;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class OCPPApplicationTests {
+class ApplicationTests {
 
 	protected Log logger = LogFactory.getLog(getClass());
 

@@ -58,44 +58,54 @@ public class Application {
 
 
 
-# Customize Usecase  
+# Customize Handler  
 
 If you want to customize a Handler, implement the corresponding server handler.
 
 ```java
 import io.u2ware.ocpp.v1_6.exception.ErrorCodes; // 3.
-import io.u2ware.ocpp.v1_6.handlers.StartTransaction.CentralSystemHandler; // 2.
+import io.u2ware.ocpp.v1_6.handlers.DataTransfer.CentralSystemHandler; // 2.
 
 @Component // 1.
-public class StartTransaction implements CentralSystemHandler { // 2.
+public class DataTransfer implements CentralSystemHandler { // 2.
 
-    @Override/** StartTransaction [2/4] */
-    public StartTransactionResponse receivedStartTransactionRequest(
-        String id, StartTransactionRequest req) {
-        
+    @Override/** DataTransfer [1/4] */
+    public DataTransferRequest sendDataTransferRequest(
+        String id, Map<String, Object> req) {
+        return DataTransferRequest.builder().build();
+    }
+
+    @Override/** DataTransfer [3/4] */
+    public void receivedDataTransferResponse(
+        String id, DataTransferResponse res, ErrorCode err) {
+    }
+
+    @Override/** DataTransfer [2/4] */
+    public DataTransferResponse receivedDataTransferRequest(
+        String id, DataTransferRequest req) {
         if(ObjectUtils.isEmpty(req)) {
             throw ErrorCodes.GenericError.exception("your error message"); // 3.
         }
-        return StartTransactionResponse.builder().build();
+        return DataTransferResponse.builder().build();
     }
 
-    @Override/** StartTransaction [4/4] */
-    public void sendStartTransactionResponse(
-        String id, StartTransactionResponse res, ErrorCode err) {        
-    }     
+    @Override/** DataTransfer [4/4] */
+    public void sendDataTransferResponse(
+        String id, DataTransferResponse res, ErrorCode err) {
+    }
 }
-
 ```
 
 ```java
-import io.u2ware.ocpp.v1_6.handlers.Heartbeat; // 2.
 import io.u2ware.ocpp.v1_6.handlers.RemoteStartTransaction; // 2.
+import io.u2ware.ocpp.v1_6.handlers.UnlockConnector; // 2.
 import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommandOperations; // 4.
 
 @Component // 1.
 public class MyCustomHandler implements 
-    RemoteStartTransaction.CentralSystemHandler, // 2.
-    Heartbeat.CentralSystemHandler {  // 2.
+    UnlockConnector.CentralSystemHandler, // 2.
+    RemoteStartTransaction.CentralSystemHandler // 2.
+    {  
 
     protected @Autowired CentralSystemCommandOperations operations; // 4.
 
@@ -104,26 +114,23 @@ public class MyCustomHandler implements
         return new String[]{"MyCustomHandler"};
     }
 
-    @Override/** MyCustomHandler [2/8] */
-    public HeartbeatResponse receivedHeartbeatRequest(
-        String id, HeartbeatRequest req) {
-        return HeartbeatResponse.builder().build();
+    @Overridee/** MyCustomHandler [1/8] */
+    public UnlockConnectorRequest sendUnlockConnectorRequest(
+        String id, Map<String, Object> req) {
+        return UnlockConnectorRequest.builder().build();
     }
 
-    @Override/** MyCustomHandler [4/8] */
-    public void sendHeartbeatResponse(
-        String id, HeartbeatResponse res, ErrorCode err) {        
-        
+    @Override/** MyCustomHandler [3/8] */
+    public void receivedUnlockConnectorResponse(
+        String id, UnlockConnectorResponse res, ErrorCode err) {
         CentralSystemCommand command = 
-            CentralSystemCommand.ALL.RemoteStartTransaction.buildWith("MyCustomHandler");
-
-        operations.send(command); // 4.
+            CentralSystemCommand.Core.RemoteStartTransaction.buildWith("MyCustomHandler");
+        operations.send(command); // 4.            
     }
 
     @Override/** MyCustomHandler [5/8] */
     public RemoteStartTransactionRequest sendRemoteStartTransactionRequest(
         String id, Map<String, Object> req) {
-        
         return RemoteStartTransactionRequest.builder().build();        
     } 
 
