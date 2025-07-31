@@ -10,8 +10,7 @@ import org.springframework.context.ApplicationContext;
 import io.u2ware.ocpp.config.WebSocketHandlerInvoker;
 import io.u2ware.ocpp.v1_6.messaging.CentralSystem;
 import io.u2ware.ocpp.v1_6.messaging.ChargePoint;
-import io.u2ware.ocpp.v1_6.messaging.Specification;
-import io.u2ware.ocpp.v1_6.messaging.SpecificationSendingTemplate;
+import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommandTemplate;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,47 +22,13 @@ class ApplicationTests {
 	protected @Autowired ApplicationContext ac;
 
 	protected @Autowired CentralSystem server;
-	protected @Autowired SpecificationSendingTemplate serverTemplate;
+	protected @Autowired CentralSystemCommandTemplate serverTemplate;
 
 	@Test
 	void context1Loads() throws Exception {
 
 
-		ChargePoint client = new ChargePoint();
-		client.registerDefaultUsecases();
-		SpecificationSendingTemplate clientTemplate = new SpecificationSendingTemplate(client);
-
-		logger.info("===================");			
-		WebSocketHandlerInvoker.of(ac).connect(serverTemplate, clientTemplate);
-		Thread.sleep(2000);
-
-
-		logger.info("2===================");			
-		for(Specification s : Specification.usecases(server)) {
-			serverTemplate.convertAndSend(s.message());
-			Thread.sleep(500);
-		}
-
-		logger.info("3===================");			
-		for(Specification s : Specification.usecases(client)) {
-			clientTemplate.convertAndSend(s.message());
-			Thread.sleep(500);
-		}		
-
-		// SpecificationAction a1 = Specification.InitiatedByCentralSystem.DataTransfer.message();
-		// serverTemplate.convertAndSend(a1);
-		// Thread.sleep(1000);
-
-
-		// SpecificationAction a2 = Specification.Core.DataTransfer.message();
-		// serverTemplate.convertAndSend(a2);
-		// Thread.sleep(1000);
-
-
-		// logger.info(Specification.Core.DataTransfer.category());
-		// logger.info(Specification.InitiatedByCentralSystem.DataTransfer.category());
-
-
+		
 
 	}
 }

@@ -8,10 +8,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import io.u2ware.ocpp.config.WebSocketHandlerInvoker;
+import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommand;
+import io.u2ware.ocpp.v1_6.messaging.ChargePoint;
+import io.u2ware.ocpp.v1_6.messaging.ChargePointCommand;
+import io.u2ware.ocpp.v1_6.messaging.ChargePointCommandTemplate;
 import io.u2ware.ocpp.v2_0_1.messaging.CSMS;
-import io.u2ware.ocpp.v2_0_1.messaging.Specification;
-import io.u2ware.ocpp.v2_0_1.messaging.SpecificationSendingTemplate;
+import io.u2ware.ocpp.v2_0_1.messaging.CSMSCommand;
+import io.u2ware.ocpp.v2_0_1.messaging.CSMSCommandTemplate;
+import io.u2ware.ocpp.v2_0_1.messaging.ChargingStationCommandTemplate;
 import io.u2ware.ocpp.v2_0_1.messaging.ChargingStation;
+import io.u2ware.ocpp.v2_0_1.messaging.ChargingStationCommand;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OCPPApplicationTests {
@@ -21,31 +27,14 @@ class OCPPApplicationTests {
   	protected @Autowired ApplicationContext ac;
 
 	protected @Autowired CSMS server;
-	protected @Autowired SpecificationSendingTemplate serverTemplate;
+	protected @Autowired CSMSCommandTemplate serverTemplate;
 
 
 	@Test
 	void context1Loads() throws Exception {
 
-		logger.info("Mock Client...");			
-		ChargingStation client = new ChargingStation();
-		client.registerDefaultUsecases();
-		SpecificationSendingTemplate clientTemplate = new SpecificationSendingTemplate(client);
-
-		logger.info("WebSocketHandlerInvoker... (without I/O)");			
-		WebSocketHandlerInvoker.of(ac).connect(serverTemplate, clientTemplate);
-		Thread.sleep(2000);
-
-		logger.info("Messaging Initiated By CSMS...");
-		for(Specification s : Specification.usecases(server)) {
-			serverTemplate.convertAndSend(s.message());
-			Thread.sleep(500);
-		}
-
-		logger.info("Messaging Initiated By ChargingStation...");			
-		for(Specification s : Specification.usecases(client)) {
-			clientTemplate.convertAndSend(s.message());
-			Thread.sleep(500);
-		}	
+		logger.info("(v2.0.1)CSMS               : "+server);
+		logger.info("(v2.0.1)CSMSCommandTemplate: "+serverTemplate);
+			
 	}
 }
