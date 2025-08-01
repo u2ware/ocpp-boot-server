@@ -188,6 +188,38 @@ class ApplicationTests {
 
 
 
+# Core Concept 
+![OCPP-BOOT](./lib/core.png)
+
+* v2.1
+
+|participant|object|
+|------|:---|
+|CommandOperations |[CSMSCommandOperations]()  or [ChargingStationCommandOperations]() |
+|Offer | [CSMSHandler]() or [ChargingStationHandler]() |
+|Sender |[CSMS]() or [ChargingStation]() |
+|Receiver |[CSMS]() or [ChargingStation]() |
+|Answer | [CSMSHandler]() or [ChargingStationHandler]() |
 
 
+* v2.0.1
+
+|participant|object|
+|------|:---|
+|CommandOperations |[CSMSCommandOperations]()  or [ChargingStationCommandOperations]() |
+|Offer | [CSMSHandler]() or [ChargingStationHandler]() |
+|Sender |[CSMS]() or [ChargingStation]() |
+|Receiver |[CSMS]() or [ChargingStation]() |
+|Answer | [CSMSHandler]() or [ChargingStationHandler]() |
+
+
+* v1.6
+
+|participant|object|
+|------|:---|
+|CommandOperations |[CentralSystemCommandOperations]()  or [ChargePointCommandOperations]() |
+|Offer | [CentralSystemHandler]() or [ChargePointHandler]() |
+|Sender |[CentralSystem]() or [ChargePoint]() |
+|Receiver |[CentralSystem]() or [ChargePoint]() |
+|Answer | [CentralSystemHandler]() or [ChargePointHandler]() |
 
