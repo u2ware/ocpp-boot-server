@@ -159,27 +159,31 @@ import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
 @SpringBootTest
 class ApplicationTests {
 
-  	protected @Autowired ApplicationContext ac;
+    protected @Autowired ApplicationContext ac;
 
-	protected @Autowired CSMSCommandTemplate serverTemplate;
+    protected @Autowired CSMSCommandTemplate serverTemplate;
 
-	@Test
-	void context1Loads() throws Exception {
+    @Test
+    void context1Loads() throws Exception {
 
-		/////////////////////////////////////
-		// OCPP Server Test without I/O
-		/////////////////////////////////////
-		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate(); //-> 1
-		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate); //-> 2
-		Thread.sleep(1000);	
+        /////////////////////////////////////
+        // OCPP Server Test without I/O
+        /////////////////////////////////////
+        ChargingStationCommandTemplate mockClientTemplate 
+            = new ChargingStationCommandTemplate(); //-> 1
 
-		/////////////////////////////////////
-		// 
-		/////////////////////////////////////
-		serverTemplate.send(CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler"));
-		Thread.sleep(1000);
+        MockWebSocketHandlerInvoker.of(ac)
+            .connect(serverTemplate, mockClientTemplate); //-> 2
+            
+        Thread.sleep(1000);	
 
-	}
+        /////////////////////////////////////
+        // 
+        /////////////////////////////////////
+        serverTemplate.send(CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler"));
+        Thread.sleep(1000);
+
+    }
 }
 ```
 1. Make mock client object.
