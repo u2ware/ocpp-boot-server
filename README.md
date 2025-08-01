@@ -180,9 +180,11 @@ class ApplicationTests {
         /////////////////////////////////////
         // 
         /////////////////////////////////////
-        serverTemplate.send(CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler"));
-        Thread.sleep(1000);
+        CSMSCommand command 
+            = CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler");
+        serverTemplate.send(command);
 
+        Thread.sleep(1000);
     }
 }
 ```
