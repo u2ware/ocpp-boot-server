@@ -1,4 +1,4 @@
-package io.u2ware.ocpp.server.v1_6;
+package io.u2ware.ocpp.server.v2_0_1;
 
 import java.util.Map;
 
@@ -7,14 +7,14 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import io.u2ware.ocpp.v1_6.exception.ErrorCode;
-import io.u2ware.ocpp.v1_6.exception.ErrorCodes; // 3.
-import io.u2ware.ocpp.v1_6.handlers.DataTransfer.CentralSystemHandler; // 2.
-import io.u2ware.ocpp.v1_6.model.DataTransferRequest;
-import io.u2ware.ocpp.v1_6.model.DataTransferResponse;
+import io.u2ware.ocpp.v2_0_1.exception.ErrorCode;
+import io.u2ware.ocpp.v2_0_1.exception.ErrorCodes; // 3.
+import io.u2ware.ocpp.v2_0_1.handlers.DataTransfer.CSMSHandler; // 2.
+import io.u2ware.ocpp.v2_0_1.model.DataTransferRequest;
+import io.u2ware.ocpp.v2_0_1.model.DataTransferResponse;
 
-@Component("DataTransfer_v1_6") // 1.
-public class DataTransfer implements CentralSystemHandler { // 2.
+@Component("DataTransfer_v2_0_1") // 1.
+public class DataTransfer implements CSMSHandler { // 2.
 
     protected Log logger = LogFactory.getLog(getClass());
 

@@ -17,7 +17,7 @@ import io.u2ware.ocpp.v1_6.model.RemoteStartTransactionResponse;
 import io.u2ware.ocpp.v1_6.model.UnlockConnectorRequest;
 import io.u2ware.ocpp.v1_6.model.UnlockConnectorResponse;
 
-@Component // 1.
+@Component("MyCustomHandler_v1_6") // 1.
 public class MyCustomHandler implements 
     UnlockConnector.CentralSystemHandler, // 2.
     RemoteStartTransaction.CentralSystemHandler // 2.
@@ -25,7 +25,7 @@ public class MyCustomHandler implements
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected @Autowired CentralSystemCommandOperations operations; // 4.
+    protected @Autowired(required = false) CentralSystemCommandOperations operations; // 4.
 
     @Override
     public String[] features() {

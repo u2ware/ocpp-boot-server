@@ -1,7 +1,7 @@
 # ocpp-boot-server
 OCPP server implementation based on spring-boot
 
-# Usage
+# Usage (Preparing)
 
 ```bash
 ./mvnw springboot:run
@@ -14,9 +14,9 @@ OCPP server implementation based on spring-boot
 
 ```java
 @SpringBootApplication 
-@EnableOcppServer(              //-> 1. 
-    version = OCPPVersion.V1_6, //-> 2. 
-	uri = "/yourocpp"           //-> 3. 
+@EnableOcppServer(              //-> 3. 
+    version = OCPPVersion.V2_1, //-> 2. 
+	uri = "/yourocpp"           //-> 1. 
 )
 public class Application {
 	public static void main(String[] args) {
@@ -26,27 +26,10 @@ public class Application {
 ```
 1. URI. ocpp clients can connect via URL.(ws://localhost:18080/yourocpp)
 
-2. version. V1_6, V2_0_1, V2_1
+2. versions. V2_1, V2_0_1, V1_6
 
-3. '@EnableOcppServer' automatically registers the following beans:
+3. [@EnableOcppServer]() automatically registers the following beans:
 
-
-    * v1.6
-
-	|beanName|beanClass|Description|
-	|------|:---|---|
-	|ocppOperations | [CentralSystem]()| An object that can offer and answer OCPP version 1.6 message.|
-	|ocppTemplate | [CentralSystemCommandOperations]() | An object that can send a [CentralSystemCommand]().|
-	|ocppInitializer | [CentralSystemInitializer]()| Scan for a [CentralSystemHandler]() that register it in [CentralSystem]().|
-
-
-    * v2.0.1
-
-	|beanName|beanClass|Description|
-	|------|:---|---|
-	|ocppOperations | [CCMS]()| An object that can offer and answer OCPP version 2.0.1 message.|
-	|ocppTemplate | [CCMSCommandOperations]()| An object that can send a [CCMSCommand]().|
-	|ocppInitializer | [CCMSInitializer]()| Scan for a [CCMSHandler]() that register it in [CCMS]().|
 
     * v2.1
 
@@ -57,17 +40,36 @@ public class Application {
 	|ocppInitializer | [CCMSInitializer]()| Scan for a [CCMSHandler]() that register it in [CCMS]().|
 
 
+    * v2.0.1
+
+	|beanName|beanClass|Description|
+	|------|:---|---|
+	|ocppOperations | [CCMS]()| An object that can offer and answer OCPP version 2.0.1 message.|
+	|ocppTemplate | [CCMSCommandOperations]()| An object that can send a [CCMSCommand]().|
+	|ocppInitializer | [CCMSInitializer]()| Scan for a [CCMSHandler]() that register it in [CCMS]().|
+
+    * v1.6
+
+	|beanName|beanClass|Description|
+	|------|:---|---|
+	|ocppOperations | [CentralSystem]()| An object that can offer and answer OCPP version 1.6 message.|
+	|ocppTemplate | [CentralSystemCommandOperations]() | An object that can send a [CentralSystemCommand]().|
+	|ocppInitializer | [CentralSystemInitializer]()| Scan for a [CentralSystemHandler]() that register it in [CentralSystem]().|
+
+
+
+
 
 # Customize Handler  
 
 If you want to customize a Handler, implement the corresponding server handler.
 
 ```java
-import io.u2ware.ocpp.v1_6.exception.ErrorCodes; // 3.
-import io.u2ware.ocpp.v1_6.handlers.DataTransfer.CentralSystemHandler; // 2.
+import io.u2ware.ocpp.v2_1.exception.ErrorCodes; //-> 3.
+import io.u2ware.ocpp.v2_1.handlers.DataTransfer.CSMSHandler; //-> 2.
 
-@Component // 1.
-public class DataTransfer implements CentralSystemHandler { // 2.
+@Component //-> 1.
+public class DataTransfer implements CSMSHandler { //-> 2.
 
     @Override/** DataTransfer [1/4] */
     public DataTransferRequest sendDataTransferRequest(
@@ -83,8 +85,8 @@ public class DataTransfer implements CentralSystemHandler { // 2.
     @Override/** DataTransfer [2/4] */
     public DataTransferResponse receivedDataTransferRequest(
         String id, DataTransferRequest req) {
-        if(ObjectUtils.isEmpty(req)) {
-            throw ErrorCodes.GenericError.exception("your error message"); // 3.
+        if(ObjectUtils.isEmpty(req)) {  // your logic...
+            throw ErrorCodes.GenericError.exception("your error message"); //-> 3.
         }
         return DataTransferResponse.builder().build();
     }
@@ -97,24 +99,24 @@ public class DataTransfer implements CentralSystemHandler { // 2.
 ```
 
 ```java
-import io.u2ware.ocpp.v1_6.handlers.RemoteStartTransaction; // 2.
-import io.u2ware.ocpp.v1_6.handlers.UnlockConnector; // 2.
-import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommandOperations; // 4.
+import io.u2ware.ocpp.v2_1.handlers.RequestStartTransaction; //-> 2.
+import io.u2ware.ocpp.v2_1.handlers.UnlockConnector; //-> 2.
+import io.u2ware.ocpp.v2_1.messaging.CSMSCommandOperations; //-> 4.
 
-@Component // 1.
+@Component  //-> 1.
 public class MyCustomHandler implements 
-    UnlockConnector.CentralSystemHandler, // 2.
-    RemoteStartTransaction.CentralSystemHandler // 2.
+    UnlockConnector.CSMSHandler, //-> 2.
+    RequestStartTransaction.CSMSHandler //-> 2.
     {  
 
-    protected @Autowired CentralSystemCommandOperations operations; // 4.
+    protected @Autowired CSMSCommandOperations operations; //-> 4.
 
     @Override
     public String[] features() {
-        return new String[]{"MyCustomHandler"};
+        return new String[]{"MyCustomHandler"}; 
     }
 
-    @Overridee/** MyCustomHandler [1/8] */
+    @Override/** MyCustomHandler [1/8] */
     public UnlockConnectorRequest sendUnlockConnectorRequest(
         String id, Map<String, Object> req) {
         return UnlockConnectorRequest.builder().build();
@@ -123,35 +125,66 @@ public class MyCustomHandler implements
     @Override/** MyCustomHandler [3/8] */
     public void receivedUnlockConnectorResponse(
         String id, UnlockConnectorResponse res, ErrorCode err) {
-        CentralSystemCommand command = 
-            CentralSystemCommand.Core.RemoteStartTransaction.buildWith("MyCustomHandler");
-        operations.send(command); // 4.            
+
+        CSMSCommand command = 
+            CSMSCommand.ALL.RequestStartTransaction.buildWith("MyCustomHandler");
+        
+        operations.send(command); //-> 4.            
     }
 
     @Override/** MyCustomHandler [5/8] */
-    public RemoteStartTransactionRequest sendRemoteStartTransactionRequest(
+    public RequestStartTransactionRequest sendRequestStartTransactionRequest(
         String id, Map<String, Object> req) {
-        return RemoteStartTransactionRequest.builder().build();        
+        return RequestStartTransactionRequest.builder().build();        
     } 
 
     @Override/** MyCustomHandler [7/8] */
-    public void receivedRemoteStartTransactionResponse(
-        String id, RemoteStartTransactionResponse res, ErrorCode err) {   
+    public void receivedRequestStartTransactionResponse(
+        String id, RequestStartTransactionResponse res, ErrorCode err) {   
     }
 }
 ```
 1. Declare @Component so that 'ocppInitializer' scans the beans.
-2. Implement a Client Handler according to OCPP messages. 
+2. Implement a Server Handler according to OCPP messages. 
 3. <i>OCPP CALL ERROR</i> messages can be sent by throwing an error code. 
 4. You can send other <i>OCPP CALL</i> messages using 'ocppTemplate'.
 
-# Test without I/O (preparing)
+# Test without I/O
 
+```java
+import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
+import io.u2ware.ocpp.v2_1.messaging.CSMSCommandTemplate; 
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
 
+@SpringBootTest
+class ApplicationTests {
 
+  	protected @Autowired ApplicationContext ac;
 
+	protected @Autowired CSMSCommandTemplate serverTemplate;
 
-# Test with I/O (preparing)
+	@Test
+	void context1Loads() throws Exception {
+
+		/////////////////////////////////////
+		// OCPP Server Test without I/O
+		/////////////////////////////////////
+		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate(); //-> 1
+		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate); //-> 2
+		Thread.sleep(1000);	
+
+		/////////////////////////////////////
+		// 
+		/////////////////////////////////////
+		serverTemplate.send(CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler"));
+		Thread.sleep(1000);
+
+	}
+}
+```
+1. Make mock client object.
+2. Connecting mock object with your server bean. 
+
 
 
 

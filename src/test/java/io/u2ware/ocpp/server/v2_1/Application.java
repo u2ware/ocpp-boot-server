@@ -1,4 +1,4 @@
-package io.u2ware.ocpp.server.v1_6;
+package io.u2ware.ocpp.server.v2_1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,7 +8,7 @@ import io.u2ware.ocpp.OCPPVersion;
 
 
 @SpringBootApplication
-@EnableOcppServer(version = OCPPVersion.V1_6, uri="/myocpp")
+@EnableOcppServer(version = OCPPVersion.V2_1, uri="/ocpp")
 public class Application {
 
 	public static void main(String[] args) {

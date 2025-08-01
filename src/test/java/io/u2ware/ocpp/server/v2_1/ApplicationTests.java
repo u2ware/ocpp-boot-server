@@ -1,4 +1,4 @@
-package io.u2ware.ocpp.server.v2_0_1;
+package io.u2ware.ocpp.server.v2_1;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker;
-import io.u2ware.ocpp.v2_0_1.messaging.CSMS;
-import io.u2ware.ocpp.v2_0_1.messaging.CSMSCommand;
-import io.u2ware.ocpp.v2_0_1.messaging.CSMSCommandTemplate;
-import io.u2ware.ocpp.v2_0_1.messaging.ChargingStationCommandTemplate;
+import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
+import io.u2ware.ocpp.v2_1.messaging.CSMS;
+import io.u2ware.ocpp.v2_1.messaging.CSMSCommand;
+import io.u2ware.ocpp.v2_1.messaging.CSMSCommandTemplate;
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
 
 @SpringBootTest
 class ApplicationTests {
@@ -27,14 +27,14 @@ class ApplicationTests {
 	@Test
 	void context1Loads() throws Exception {
 
-		logger.info("(v2.0.1)CSMS               : "+server);
-		logger.info("(v2.0.1)CSMSCommandTemplate: "+serverTemplate);
+		logger.info("(v2.1)CSMS               : "+server);
+		logger.info("(v2.1)CSMSCommandTemplate: "+serverTemplate);
 			
 		/////////////////////////////////////
 		// OCPP Server Test  without I/O
 		/////////////////////////////////////
-		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate();
-		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate);
+		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate(); //-> 1
+		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate); //-> 2
 		Thread.sleep(1000);	
 
 		/////////////////////////////////////
