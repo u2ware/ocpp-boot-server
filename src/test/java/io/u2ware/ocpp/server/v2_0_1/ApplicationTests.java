@@ -33,7 +33,7 @@ class ApplicationTests {
 		/////////////////////////////////////
 		// OCPP Server Test  without I/O
 		/////////////////////////////////////
-		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate();
+		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate("mockClientTemplate");
 		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate);
 		Thread.sleep(1000);	
 

@@ -30,11 +30,15 @@ class ApplicationTests {
 		logger.info("(v2.1)CSMS               : "+server);
 		logger.info("(v2.1)CSMSCommandTemplate: "+serverTemplate);
 			
-		/////////////////////////////////////
-		// OCPP Server Test  without I/O
-		/////////////////////////////////////
-		ChargingStationCommandTemplate mockClientTemplate = new ChargingStationCommandTemplate(); //-> 1
-		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate); //-> 2
+        /////////////////////////////////////
+        // Test without I/O
+        /////////////////////////////////////
+		ChargingStationCommandTemplate mockClientTemplate 
+			= new ChargingStationCommandTemplate("mockClientTemplate"); //-> 1
+		
+		MockWebSocketHandlerInvoker.of(ac)
+			.connect(serverTemplate, mockClientTemplate); //-> 2
+		
 		Thread.sleep(1000);	
 
 		/////////////////////////////////////
