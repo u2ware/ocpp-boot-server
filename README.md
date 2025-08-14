@@ -71,8 +71,8 @@ public class MyCustomHandler implements
     protected @Autowired CSMSCommandOperations operations; //-> 4.
 
     @Override
-    public String[] features() {
-        return new String[]{"MyCustomHandler"}; 
+    public String usecase() {
+        return "MyCustomHandler";
     }
 
     @Override/** MyCustomHandler [1/8] */
