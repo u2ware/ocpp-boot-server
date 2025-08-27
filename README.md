@@ -1,5 +1,5 @@
 # ocpp-boot-server
-OCPP server implementation based on spring-boot.
+OCPP server sample implementation based on spring-boot.
 
 All messages for all versions of OCPP are written in Java.
 
