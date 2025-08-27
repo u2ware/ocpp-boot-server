@@ -17,32 +17,29 @@ If you want to customize a businiss logic, implement the corresponding server ha
 
 
 
-# Customize   
+# Customize Handler  
 
 ```java
+import io.u2ware.ocpp.v2_1.handlers.DataTransfer.CSMSHandler; //-> 1.
 import io.u2ware.ocpp.v2_1.exception.ErrorCodes; //-> 3.
-import io.u2ware.ocpp.v2_1.handlers.DataTransfer.CSMSHandler; //-> 2.
 
-@Component //-> 1.
-public class MyDataTransfer implements CSMSHandler { //-> 2.
+@Component //-> 2.
+public class MyDataTransfer implements CSMSHandler { //-> 1.
 
     @Override/** DataTransfer [1/4] */
     public DataTransferRequest sendDataTransferRequest(
         String id, Map<String, Object> req) {
-
         return DataTransferRequest.builder().build();
     }
 
     @Override/** DataTransfer [3/4] */
     public void receivedDataTransferResponse(
         String id, DataTransferResponse res, ErrorCode err) {
-
     }
 
     @Override/** DataTransfer [2/4] */
     public DataTransferResponse receivedDataTransferRequest(
         String id, DataTransferRequest req) {
-
         if(ObjectUtils.isEmpty(req)) {  // your logic...
             throw ErrorCodes.GenericError.exception("your error message"); //-> 3.
         }
@@ -52,75 +49,22 @@ public class MyDataTransfer implements CSMSHandler { //-> 2.
     @Override/** DataTransfer [4/4] */
     public void sendDataTransferResponse(
         String id, DataTransferResponse res, ErrorCode err) {
-
     }
 }
 ```
-
-```java
-import io.u2ware.ocpp.v2_1.handlers.RequestStartTransaction; //-> 2.
-import io.u2ware.ocpp.v2_1.handlers.UnlockConnector; //-> 2.
-import io.u2ware.ocpp.v2_1.messaging.CSMSCommandOperations; //-> 4.
-
-@Component  //-> 1.
-public class MyCustomHandler implements 
-    UnlockConnector.CSMSHandler, //-> 2.
-    RequestStartTransaction.CSMSHandler //-> 2.
-    {  
-
-    protected @Autowired CSMSCommandOperations operations; //-> 4.
-
-    @Override
-    public String usecase() {
-        return "MyCustomHandler";
-    }
-
-    @Override/** MyCustomHandler [1/8] */
-    public UnlockConnectorRequest sendUnlockConnectorRequest(
-        String id, Map<String, Object> req) {
-
-        return UnlockConnectorRequest.builder().build();
-    }
-
-    @Override/** MyCustomHandler [3/8] */
-    public void receivedUnlockConnectorResponse(
-        String id, UnlockConnectorResponse res, ErrorCode err) {
-
-        CSMSCommand command = 
-            CSMSCommand.ALL.RequestStartTransaction.buildWith("MyCustomHandler");
-        
-        operations.send(id, command); //-> 4.            
-    }
-
-    @Override/** MyCustomHandler [5/8] */
-    public RequestStartTransactionRequest sendRequestStartTransactionRequest(
-        String id, Map<String, Object> req) {
-
-        return RequestStartTransactionRequest.builder().build();        
-    } 
-
-    @Override/** MyCustomHandler [7/8] */
-    public void receivedRequestStartTransactionResponse(
-        String id, RequestStartTransactionResponse res, ErrorCode err) {   
-
-
-    }
-}
-```
-1. Declare @Component so that 'ocppInitializer' scans the beans.
-2. Implement a Server Handler according to OCPP messages. 
+1. Implement a Server Handler according to OCPP messages. 
+2. Declare @Component so that 'ocppInitializer' scans the beans.
 3. <i>OCPP CALL ERROR</i> messages can be sent by throwing an error code. 
-4. You can send other <i>OCPP CALL</i> messages using 'ocppTemplate'.
+
 
 # Test without I/O
 
 ```java
-import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
-import io.u2ware.ocpp.v2_1.messaging.CSMSCommandTemplate; 
 import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
+import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
 
 @SpringBootTest
-class ApplicationTests {
+class MyDataTransferHandlerTests {
 
     protected @Autowired ApplicationContext ac;
 
@@ -130,7 +74,7 @@ class ApplicationTests {
     void context1Loads() throws Exception {
 
         /////////////////////////////////////
-        // Test without I/O
+        // Mock Object
         /////////////////////////////////////
         ChargingStationCommandTemplate mockClientTemplate 
             = new ChargingStationCommandTemplate("mockClientTemplate"); //-> 1
@@ -140,12 +84,12 @@ class ApplicationTests {
             
         Thread.sleep(1000);	
 
-        /////////////////////////////////////
-        // 
-        /////////////////////////////////////
+		/////////////////////////////////////
+		// Test without I/O
+		/////////////////////////////////////
         CSMSCommand command 
-            = CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler");
-        serverTemplate.send(command);
+            = CSMSCommand.ALL.DataTransfer.build();
+        serverTemplate.send(command); //-> 3
 
         Thread.sleep(1000);
     }
@@ -153,6 +97,67 @@ class ApplicationTests {
 ```
 1. Make mock client object.
 2. Connecting mock object with your server bean. 
+3. send server command.
+
+
+
+
+# Customize Usecase    
+```java
+@Component 
+public class SecurityA02ServerHandler implements 
+    TriggerMessage.CSMSHandler,
+    SignCertificate.CSMSHandler, 
+    CertificateSigned.CSMSHandler
+    {
+
+    protected @Autowired CSMSCommandOperations ocppTemplate; //
+
+    @Override
+    public String usecase() {
+        return "A02"; //
+    }
+
+    @Override/** TriggerMessage [1/4] */
+    public TriggerMessageRequest sendTriggerMessageRequest(
+        String id, Map<String, Object> req) {
+        return TriggerMessageRequest.builder().build();
+    }   
+
+    @Override/** TriggerMessage [3/4] */
+    public void receivedTriggerMessageResponse(
+        String id, TriggerMessageResponse res, ErrorCode err) {
+    }
+
+    @Override/** SignCertificate [2/4] */
+    public SignCertificateResponse receivedSignCertificateRequest(
+        String id, SignCertificateRequest req) {
+        return SignCertificateResponse.builder().build();
+    }
+
+    @Override/** SignCertificate [4/4] */
+    public void sendSignCertificateResponse(
+        String id, SignCertificateResponse res, ErrorCode err) {
+        ///////////////////////////////////////////////////////////////
+        // You can send other OCPP CALL messages using 'ocppTemplate'.
+        ///////////////////////////////////////////////////////////////
+        CSMSCommand command = 
+            CSMSCommand.ALL.CertificateSigned.buildWith("A03");
+        operations.send(id, command); //
+    }
+
+    @Override/** CertificateSigned [1/4] */
+    public CertificateSignedRequest sendCertificateSignedRequest(
+        String id, Map<String, Object> req) {
+        return CertificateSignedRequest.builder().build();
+    }  
+
+    @Override/** CertificateSigned [3/4] */
+    public void receivedCertificateSignedResponse(
+        String id, CertificateSignedResponse res, ErrorCode err) {
+    }
+}
+```
 
 
 # @EnableOcppServer 

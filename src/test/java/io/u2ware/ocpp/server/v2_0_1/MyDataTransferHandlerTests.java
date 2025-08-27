@@ -14,7 +14,7 @@ import io.u2ware.ocpp.v2_0_1.messaging.CSMSCommandTemplate;
 import io.u2ware.ocpp.v2_0_1.messaging.ChargingStationCommandTemplate;
 
 @SpringBootTest
-class ApplicationTests {
+class MyDataTransferHandlerTests {
 
 	protected Log logger = LogFactory.getLog(getClass());
 
@@ -41,7 +41,7 @@ class ApplicationTests {
 		/////////////////////////////////////
 		// 
 		/////////////////////////////////////
-		serverTemplate.send(CSMSCommand.ALL.UnlockConnector.buildWith("MyCustomHandler"));
+		serverTemplate.send(CSMSCommand.ALL.DataTransfer.build());
 		Thread.sleep(1000);
 
 	}
