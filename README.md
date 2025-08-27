@@ -8,7 +8,7 @@ If you want to customize a businiss logic, implement the corresponding server ha
 # Usage 
 
 ```bash
-./mvnw springboot:run
+./mvnw spring-boot:run
 ```
 
 # Admin UX (Preparing)

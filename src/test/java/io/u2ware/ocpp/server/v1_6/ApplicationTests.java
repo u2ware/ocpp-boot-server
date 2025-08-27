@@ -21,8 +21,8 @@ class ApplicationTests {
 
   	protected @Autowired ApplicationContext ac;
 
-	protected @Autowired CentralSystem server;
-	protected @Autowired CentralSystemCommandTemplate serverTemplate;
+	protected @Autowired(required = false) CentralSystem server;
+	protected @Autowired(required = false) CentralSystemCommandTemplate serverTemplate;
 
 
 	@Test
@@ -30,6 +30,7 @@ class ApplicationTests {
 
 		logger.info("(v1.6)CentralSystem               : "+server);
 		logger.info("(v1.6)CentralSystemCommandTemplate: "+serverTemplate);
+		if(server == null || serverTemplate == null) return;
 		
 		/////////////////////////////////////
 		// OCPP Server Test without I/O

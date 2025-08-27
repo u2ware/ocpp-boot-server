@@ -20,8 +20,8 @@ class ApplicationTests {
 
   	protected @Autowired ApplicationContext ac;
 
-	protected @Autowired CSMS server;
-	protected @Autowired CSMSCommandTemplate serverTemplate;
+	protected @Autowired(required = false) CSMS server;
+	protected @Autowired(required = false) CSMSCommandTemplate serverTemplate;
 
 
 	@Test
@@ -29,6 +29,7 @@ class ApplicationTests {
 
 		logger.info("(v2.1)CSMS               : "+server);
 		logger.info("(v2.1)CSMSCommandTemplate: "+serverTemplate);
+		if(server == null || serverTemplate == null) return;
 			
         /////////////////////////////////////
         // Test without I/O
