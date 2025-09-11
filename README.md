@@ -71,7 +71,7 @@ import io.u2ware.ocpp.v2_1.model.*;
 class MyDataTransferHandlerTests {
 
   	protected @Autowired ApplicationContext ac;
-	protected CSMSSession ocppSession;
+	protected @Autowired CSMSSession ocppSession;
 
     @Test
     void context1Loads() throws Exception {
