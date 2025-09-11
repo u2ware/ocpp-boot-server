@@ -20,8 +20,10 @@ If you want to customize a businiss logic, implement the corresponding server ha
 # Customize Handler  
 
 ```java
-import io.u2ware.ocpp.v2_1.handlers.DataTransfer.CSMSHandler; //-> 1.
-import io.u2ware.ocpp.v2_1.exception.ErrorCodes; //-> 3.
+import io.u2ware.ocpp.v2_1.exception.*;
+import io.u2ware.ocpp.v2_1.handlers.*;
+import io.u2ware.ocpp.v2_1.messaging.*;
+import io.u2ware.ocpp.v2_1.model.*;
 
 @Component //-> 2.
 public class MyDataTransfer implements CSMSHandler { //-> 1.
@@ -53,22 +55,23 @@ public class MyDataTransfer implements CSMSHandler { //-> 1.
 }
 ```
 1. Implement a Server Handler according to OCPP messages. 
-2. Declare @Component so that 'ocppInitializer' scans the beans.
+2. Declare @Component so that scans the beans.
 3. <i>OCPP CALL ERROR</i> messages can be sent by throwing an error code. 
 
 
 # Test without I/O
 
 ```java
-import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
-import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
+import io.u2ware.ocpp.v2_1.exception.*;
+import io.u2ware.ocpp.v2_1.handlers.*;
+import io.u2ware.ocpp.v2_1.messaging.*;
+import io.u2ware.ocpp.v2_1.model.*;
 
 @SpringBootTest
 class MyDataTransferHandlerTests {
 
-    protected @Autowired ApplicationContext ac;
-
-    protected @Autowired CSMSCommandTemplate serverTemplate;
+  	protected @Autowired ApplicationContext ac;
+	protected CSMSSession ocppSession;
 
     @Test
     void context1Loads() throws Exception {
@@ -76,20 +79,20 @@ class MyDataTransferHandlerTests {
         /////////////////////////////////////
         // Mock Object
         /////////////////////////////////////
-        ChargingStationCommandTemplate mockClientTemplate 
-            = new ChargingStationCommandTemplate("mockClientTemplate"); //-> 1
-
-        MockWebSocketHandlerInvoker.of(ac)
-            .connect(serverTemplate, mockClientTemplate); //-> 2
-            
-        Thread.sleep(1000);	
+		ChargingStationSession mockSession 
+			= new ChargingStationSession("mockSession"); //-> 1
+		
+		MockWebSocketHandlerInvoker.of(ac)
+			.connect(ocppSession, mockSession); //-> 2
+		
+		Thread.sleep(1000);	
 
 		/////////////////////////////////////
 		// Test without I/O
 		/////////////////////////////////////
         CSMSCommand command 
             = CSMSCommand.ALL.DataTransfer.build();
-        serverTemplate.send(command); //-> 3
+        ocppSession.offer(command); //-> 3
 
         Thread.sleep(1000);
     }
@@ -104,6 +107,11 @@ class MyDataTransferHandlerTests {
 
 # Customize Usecase    
 ```java
+import io.u2ware.ocpp.v2_1.exception.*;
+import io.u2ware.ocpp.v2_1.handlers.*;
+import io.u2ware.ocpp.v2_1.messaging.*;
+import io.u2ware.ocpp.v2_1.model.*;
+
 @Component 
 public class SecurityA02ServerHandler implements 
     TriggerMessage.CSMSHandler,
@@ -111,7 +119,7 @@ public class SecurityA02ServerHandler implements
     CertificateSigned.CSMSHandler
     {
 
-    protected @Autowired CSMSCommandOperations ocppTemplate; //
+    protected @Autowired CSMSSession ocppSession; //
 
     @Override
     public String usecase() {
@@ -143,7 +151,7 @@ public class SecurityA02ServerHandler implements
         ///////////////////////////////////////////////////////////////
         CSMSCommand command = 
             CSMSCommand.ALL.CertificateSigned.buildWith("A03");
-        operations.send(id, command); //
+        ocppSession.offer(command, id); //
     }
 
     @Override/** CertificateSigned [1/4] */
@@ -178,28 +186,13 @@ public class Application {
 
 2. versions. V2_1, V2_0_1, V1_6
 
-3. [@EnableOcppServer]() automatically registers the following beans:
+3. automatically registers the 'ocppSession' beans according to version:
 
-
-    * v2.1
-
-	|beanName|beanClass|Description|
-	|------|:---|---|
-	|ocppSession | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
-
-
-    * v2.0.1
-
-	|beanName|beanClass|Description|
-	|------|:---|---|
-	|ocppSession | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
-
-    * v1.6
-
-	|beanName|beanClass|Description|
-	|------|:---|---|
-	|ocppSession | [CentralSystemSession]() | An object that can offer a [CentralSystemCommand]().|
-
+|version|beanClass|Description|
+|------|:---|---|
+|v2.1 | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
+|v2.0.1 | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
+|v1.6 | [CentralSystemSession]() | An object that can offer a [CentralSystemCommand]().|
 
 
 
