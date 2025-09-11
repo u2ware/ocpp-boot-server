@@ -8,10 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
-import io.u2ware.ocpp.v2_1.messaging.CSMS;
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationSession; //-> 1
 import io.u2ware.ocpp.v2_1.messaging.CSMSCommand;
-import io.u2ware.ocpp.v2_1.messaging.CSMSCommandTemplate;
-import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandTemplate; //-> 1
+import io.u2ware.ocpp.v2_1.messaging.CSMSSession; 
 
 @SpringBootTest
 class MyDataTransferHandlerTests {
@@ -19,26 +18,23 @@ class MyDataTransferHandlerTests {
 	protected Log logger = LogFactory.getLog(getClass());
 
   	protected @Autowired ApplicationContext ac;
-
-	protected @Autowired(required = false) CSMS server;
-	protected @Autowired(required = false) CSMSCommandTemplate serverTemplate;
+	protected @Autowired(required = false) CSMSSession ocppSession;
 
 
 	@Test
 	void context1Loads() throws Exception {
 
-		logger.info("(v2.1)CSMS               : "+server);
-		logger.info("(v2.1)CSMSCommandTemplate: "+serverTemplate);
-		if(server == null || serverTemplate == null) return;
+		logger.info("(v2.1)CSMSSession: "+ocppSession);
+		if(ocppSession == null) return;
 			
         /////////////////////////////////////
         // Mock Object
         /////////////////////////////////////
-		ChargingStationCommandTemplate mockClientTemplate 
-			= new ChargingStationCommandTemplate("mockClientTemplate"); //-> 1
+		ChargingStationSession mockSession 
+			= new ChargingStationSession("mockSession"); //-> 1
 		
 		MockWebSocketHandlerInvoker.of(ac)
-			.connect(serverTemplate, mockClientTemplate); //-> 2
+			.connect(ocppSession, mockSession); //-> 2
 		
 		Thread.sleep(1000);	
 
@@ -47,7 +43,7 @@ class MyDataTransferHandlerTests {
 		/////////////////////////////////////
         CSMSCommand command 
             = CSMSCommand.ALL.DataTransfer.build();
-        serverTemplate.send(command); //-> 3
+        ocppSession.offer(command); //-> 3
 
         Thread.sleep(1000);
 	}

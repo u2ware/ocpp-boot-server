@@ -4,14 +4,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import io.u2ware.ocpp.v2_1.exception.ErrorCode;
 import io.u2ware.ocpp.v2_1.handlers.CertificateSigned;
 import io.u2ware.ocpp.v2_1.handlers.SignCertificate;
 import io.u2ware.ocpp.v2_1.handlers.TriggerMessage;
 import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommand;
-import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommandOperations;
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationSession;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedRequest;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedResponse;
 import io.u2ware.ocpp.v2_1.model.SignCertificateRequest;
@@ -27,10 +26,10 @@ public class SecurityA02ClientHandler  implements
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected ChargingStationCommandOperations operations; //-> 4.
+    protected ChargingStationSession ocppSession; //-> 4.
 
-    public SecurityA02ClientHandler(ChargingStationCommandOperations operations){
-        this.operations = operations;
+    public SecurityA02ClientHandler(ChargingStationSession ocppSession){
+        this.ocppSession = ocppSession;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class SecurityA02ClientHandler  implements
 
         ChargingStationCommand command = 
             ChargingStationCommand.ALL.SignCertificate.buildWith("A02");
-        operations.send(id, command); //-> 4        
+        ocppSession.offer(command, id); //-> 4        
     }
 
 

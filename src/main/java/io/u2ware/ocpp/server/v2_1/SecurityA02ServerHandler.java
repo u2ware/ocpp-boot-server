@@ -12,7 +12,7 @@ import io.u2ware.ocpp.v2_1.handlers.CertificateSigned; //-> 2
 import io.u2ware.ocpp.v2_1.handlers.SignCertificate; //-> 2
 import io.u2ware.ocpp.v2_1.handlers.TriggerMessage; //-> 2
 import io.u2ware.ocpp.v2_1.messaging.CSMSCommand;
-import io.u2ware.ocpp.v2_1.messaging.CSMSCommandOperations; //-> 4
+import io.u2ware.ocpp.v2_1.messaging.CSMSSession; //-> 4
 import io.u2ware.ocpp.v2_1.model.CertificateSignedRequest;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedResponse;
 import io.u2ware.ocpp.v2_1.model.SignCertificateRequest;
@@ -29,7 +29,7 @@ public class SecurityA02ServerHandler  implements
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected @Autowired(required = false) CSMSCommandOperations ocppTemplate; //
+    protected @Autowired(required = false) CSMSSession ocppSession; //
 
     @Override
     public String usecase() {
@@ -63,7 +63,7 @@ public class SecurityA02ServerHandler  implements
         ///////////////////////////////////////////////////////////////
         CSMSCommand command = 
             CSMSCommand.ALL.CertificateSigned.buildWith("A03");
-        ocppTemplate.send(id, command); //
+        ocppSession.offer(command, id); //
     }
 
     @Override/** CertificateSigned [1/4] */

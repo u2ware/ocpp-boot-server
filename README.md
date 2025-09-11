@@ -185,29 +185,20 @@ public class Application {
 
 	|beanName|beanClass|Description|
 	|------|:---|---|
-	|ocppOperations | [CCMS]()| An object that can offer and answer OCPP version 2.1 message.|
-	|ocppTemplate | [CCMSCommandOperations]()| An object that can send a [CCMSCommand]().|
-	|ocppInitializer | [CCMSInitializer]()| Scan for a [CCMSHandler]() that register it in [CCMS]().|
+	|ocppSession | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
 
 
     * v2.0.1
 
 	|beanName|beanClass|Description|
 	|------|:---|---|
-	|ocppOperations | [CCMS]()| An object that can offer and answer OCPP version 2.0.1 message.|
-	|ocppTemplate | [CCMSCommandOperations]()| An object that can send a [CCMSCommand]().|
-	|ocppInitializer | [CCMSInitializer]()| Scan for a [CCMSHandler]() that register it in [CCMS]().|
+	|ocppSession | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
 
     * v1.6
 
 	|beanName|beanClass|Description|
 	|------|:---|---|
-	|ocppOperations | [CentralSystem]()| An object that can offer and answer OCPP version 1.6 message.|
-	|ocppTemplate | [CentralSystemCommandOperations]() | An object that can send a [CentralSystemCommand]().|
-	|ocppInitializer | [CentralSystemInitializer]()| Scan for a [CentralSystemHandler]() that register it in [CentralSystem]().|
-
-
-
+	|ocppSession | [CentralSystemSession]() | An object that can offer a [CentralSystemCommand]().|
 
 
 
@@ -219,7 +210,7 @@ public class Application {
 
 |participant|object|
 |------|:---|
-|Commander |[CSMSCommandOperations]()  or [ChargingStationCommandOperations]() |
+|Commander |[CSMSSession]()  or [ChargingStationSession]() |
 |Offer | [CSMSHandler]() or [ChargingStationHandler]() |
 |Sender |[CSMS]() or [ChargingStation]() |
 |Receiver |[CSMS]() or [ChargingStation]() |
@@ -230,7 +221,7 @@ public class Application {
 
 |participant|object|
 |------|:---|
-|Commander |[CSMSCommandOperations]()  or [ChargingStationCommandOperations]() |
+|Commander |[CSMSSession]()  or [ChargingStationSession]() |
 |Offer | [CSMSHandler]() or [ChargingStationHandler]() |
 |Sender |[CSMS]() or [ChargingStation]() |
 |Receiver |[CSMS]() or [ChargingStation]() |
@@ -241,7 +232,7 @@ public class Application {
 
 |participant|object|
 |------|:---|
-|Commander |[CentralSystemCommandOperations]()  or [ChargePointCommandOperations]() |
+|Commander |[CentralSystemSession]()  or [ChargePointSession]() |
 |Offer | [CentralSystemHandler]() or [ChargePointHandler]() |
 |Sender |[CentralSystem]() or [ChargePoint]() |
 |Receiver |[CentralSystem]() or [ChargePoint]() |

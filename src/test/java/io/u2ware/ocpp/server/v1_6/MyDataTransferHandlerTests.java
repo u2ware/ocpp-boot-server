@@ -8,10 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker;
-import io.u2ware.ocpp.v1_6.messaging.CentralSystem;
 import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommand;
-import io.u2ware.ocpp.v1_6.messaging.CentralSystemCommandTemplate;
-import io.u2ware.ocpp.v1_6.messaging.ChargePointCommandTemplate;
+import io.u2ware.ocpp.v1_6.messaging.CentralSystemSession;
+import io.u2ware.ocpp.v1_6.messaging.ChargePointSession;
 
 
 @SpringBootTest
@@ -20,30 +19,27 @@ class MyDataTransferHandlerTests {
 	protected Log logger = LogFactory.getLog(getClass());
 
   	protected @Autowired ApplicationContext ac;
-
-	protected @Autowired(required = false) CentralSystem server;
-	protected @Autowired(required = false) CentralSystemCommandTemplate serverTemplate;
+	protected @Autowired(required = false) CentralSystemSession ocppSession;
 
 
 	@Test
 	void context1Loads() throws Exception {
 
-		logger.info("(v1.6)CentralSystem               : "+server);
-		logger.info("(v1.6)CentralSystemCommandTemplate: "+serverTemplate);
-		if(server == null || serverTemplate == null) return;
+		logger.info("(v1.6)CentralSystemSession: "+ocppSession);
+		if(ocppSession == null) return;
 		
 		/////////////////////////////////////
 		// OCPP Server Test without I/O
 		/////////////////////////////////////
-		ChargePointCommandTemplate mockClientTemplate = new ChargePointCommandTemplate("mockClientTemplate");
-		MockWebSocketHandlerInvoker.of(ac).connect(serverTemplate, mockClientTemplate);
+		ChargePointSession mockSession = new ChargePointSession("mockSession");
+		MockWebSocketHandlerInvoker.of(ac).connect(ocppSession, mockSession);
 		Thread.sleep(1000);	
 
 
 		/////////////////////////////////////
 		// 
 		/////////////////////////////////////
-		serverTemplate.send(CentralSystemCommand.Core.DataTransfer.build());
+		ocppSession.offer(CentralSystemCommand.Core.DataTransfer.build());
 		Thread.sleep(1000);
 	}
 }
