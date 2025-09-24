@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import io.u2ware.ocpp.client.MockWebSocketHandlerInvoker; //-> 2
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationTransport;
 import io.u2ware.ocpp.v2_1.messaging.CSMSCommand;
-import io.u2ware.ocpp.v2_1.messaging.CSMSSession;
-import io.u2ware.ocpp.v2_1.messaging.ChargingStationSession;  //-> 1
+import io.u2ware.ocpp.v2_1.messaging.CSMSTransport;//-> 1
 
 @SpringBootTest
 class SecurityA02ServerHandlerTests {
@@ -18,32 +18,32 @@ class SecurityA02ServerHandlerTests {
 	protected Log logger = LogFactory.getLog(getClass());
 
   	protected @Autowired ApplicationContext ac;
-	protected @Autowired(required = false) CSMSSession ocppSession;
+	protected @Autowired(required = false) CSMSTransport ocppTransport;
 
 
 	@Test
 	void context1Loads() throws Exception {
 
-		logger.info("(v2.1)CSMSSession: "+ocppSession);
-		if(ocppSession == null) return;
+		logger.info("(v2.1)CSMSTransport: "+ocppTransport);
+		if(ocppTransport == null) return;
 			
         /////////////////////////////////////
         // Test without I/O
         /////////////////////////////////////
-		ChargingStationSession mockSession 
-			= new ChargingStationSession("mockSession", false); //-> 1
-		mockSession.actor().registerHandler(new SecurityA02ClientHandler(mockSession));
+		ChargingStationTransport mockTransport 
+			= new ChargingStationTransport("mockTransport", false); //-> 1
+		mockTransport.session().registerHandler(new SecurityA02ClientHandler(mockTransport));
 
 			
 		MockWebSocketHandlerInvoker.of(ac)
-			.connect(ocppSession, mockSession); //-> 2
+			.connect(ocppTransport, mockTransport); //-> 2
 		
 		Thread.sleep(1000);	
 
 		/////////////////////////////////////
 		// 
 		/////////////////////////////////////
-		ocppSession.offer(CSMSCommand.ALL.TriggerMessage.buildWith("A02"));
+		ocppTransport.offer(CSMSCommand.ALL.TriggerMessage.buildWith("A02"));
 		Thread.sleep(1000);
 
 	}

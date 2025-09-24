@@ -71,7 +71,7 @@ import io.u2ware.ocpp.v2_1.model.*;
 class MyDataTransferHandlerTests {
 
   	protected @Autowired ApplicationContext ac;
-	protected @Autowired CSMSSession ocppSession;
+	protected @Autowired CSMSTransport ocppTransport;
 
     @Test
     void context1Loads() throws Exception {
@@ -79,11 +79,11 @@ class MyDataTransferHandlerTests {
         /////////////////////////////////////
         // Mock Object
         /////////////////////////////////////
-		ChargingStationSession mockSession 
-			= new ChargingStationSession("mockSession"); //-> 1
+		ChargingStationTransport mockTransport 
+			= new ChargingStationTransport("mockTransport"); //-> 1
 		
 		MockWebSocketHandlerInvoker.of(ac)
-			.connect(ocppSession, mockSession); //-> 2
+			.connect(ocppTransport, mockTransport); //-> 2
 		
 		Thread.sleep(1000);	
 
@@ -119,7 +119,7 @@ public class SecurityA02ServerHandler implements
     CertificateSigned.CSMSHandler
     {
 
-    protected @Autowired CSMSSession ocppSession; //
+    protected @Autowired CSMSTransport ocppTransport; //
 
     @Override
     public String usecase() {
@@ -150,8 +150,8 @@ public class SecurityA02ServerHandler implements
         // You can send other OCPP CALL messages using 'ocppTemplate'.
         ///////////////////////////////////////////////////////////////
         CSMSCommand command = 
-            CSMSCommand.ALL.CertificateSigned.buildWith("A03");
-        ocppSession.offer(command, id); //
+            CSMSCommand.ALL.CertificateSigned.buildWith("A02");
+        ocppTransport.offer(command, id); //
     }
 
     @Override/** CertificateSigned [1/4] */
@@ -190,9 +190,9 @@ public class Application {
 
 |version|beanClass|Description|
 |------|:---|---|
-|v2.1 | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
-|v2.0.1 | [CCMSSession]()| An object that can offer a [CCMSCommand]().|
-|v1.6 | [CentralSystemSession]() | An object that can offer a [CentralSystemCommand]().|
+|v2.1 | [CCMSTransport]()| An object that can offer a [CCMSCommand]().|
+|v2.0.1 | [CCMSTransport]()| An object that can offer a [CCMSCommand]().|
+|v1.6 | [CentralSystemTransport]() | An object that can offer a [CentralSystemCommand]().|
 
 
 
@@ -203,31 +203,23 @@ public class Application {
 
 |participant|object|
 |------|:---|
-|Commander |[CSMSSession]()  or [ChargingStationSession]() |
-|Offer | [CSMSHandler]() or [ChargingStationHandler]() |
-|Sender |[CSMS]() or [ChargingStation]() |
-|Receiver |[CSMS]() or [ChargingStation]() |
-|Answer | [CSMSHandler]() or [ChargingStationHandler]() |
+|Offer / Answer| [CSMSHandler]() or [ChargingStationHandler]() |
+|Sender / Receiver |[CSMSSession]() or [ChargingStationSession]() |
+|Transport |[CSMSTransport]()  or [ChargingStationTransport]() |
 
 
 * v2.0.1
 
 |participant|object|
 |------|:---|
-|Commander |[CSMSSession]()  or [ChargingStationSession]() |
-|Offer | [CSMSHandler]() or [ChargingStationHandler]() |
-|Sender |[CSMS]() or [ChargingStation]() |
-|Receiver |[CSMS]() or [ChargingStation]() |
-|Answer | [CSMSHandler]() or [ChargingStationHandler]() |
-
+|Offer / Answer| [CSMSHandler]() or [ChargingStationHandler]() |
+|Sender / Receiver |[CSMSSession]() or [ChargingStationSession]() |
+|Transport |[CSMSTransport]()  or [ChargingStationTransport]() |
 
 * v1.6
 
 |participant|object|
 |------|:---|
-|Commander |[CentralSystemSession]()  or [ChargePointSession]() |
-|Offer | [CentralSystemHandler]() or [ChargePointHandler]() |
-|Sender |[CentralSystem]() or [ChargePoint]() |
-|Receiver |[CentralSystem]() or [ChargePoint]() |
-|Answer | [CentralSystemHandler]() or [ChargePointHandler]() |
-
+|Offer / Answer| [CentralSystemHandler]() or [ChargePointHandler]() |
+|Sender / Receiver |[CentralSystemSession]() or [ChargePointSession]() |
+|Transport |[CentralSystemTransport]()  or [ChargePointTransport]() |

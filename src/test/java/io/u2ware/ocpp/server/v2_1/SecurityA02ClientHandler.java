@@ -10,7 +10,7 @@ import io.u2ware.ocpp.v2_1.handlers.CertificateSigned;
 import io.u2ware.ocpp.v2_1.handlers.SignCertificate;
 import io.u2ware.ocpp.v2_1.handlers.TriggerMessage;
 import io.u2ware.ocpp.v2_1.messaging.ChargingStationCommand;
-import io.u2ware.ocpp.v2_1.messaging.ChargingStationSession;
+import io.u2ware.ocpp.v2_1.messaging.ChargingStationTransport;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedRequest;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedResponse;
 import io.u2ware.ocpp.v2_1.model.SignCertificateRequest;
@@ -26,10 +26,10 @@ public class SecurityA02ClientHandler  implements
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected ChargingStationSession ocppSession; //-> 4.
+    protected ChargingStationTransport ocppTransport; //-> 4.
 
-    public SecurityA02ClientHandler(ChargingStationSession ocppSession){
-        this.ocppSession = ocppSession;
+    public SecurityA02ClientHandler(ChargingStationTransport ocppTransport){
+        this.ocppTransport = ocppTransport;
     }
 
     @Override
@@ -48,8 +48,8 @@ public class SecurityA02ClientHandler  implements
         logger.info(String.format("\n\n\t TriggerMessage[4/4] sendTriggerMessageResponse(%s)\n", id));
 
         ChargingStationCommand command = 
-            ChargingStationCommand.ALL.SignCertificate.buildWith("A02");
-        ocppSession.offer(command, id); //-> 4        
+            ChargingStationCommand.ALL.SignCertificate.buildWith(usecase());
+        ocppTransport.offer(command, id); //-> 4        
     }
 
 

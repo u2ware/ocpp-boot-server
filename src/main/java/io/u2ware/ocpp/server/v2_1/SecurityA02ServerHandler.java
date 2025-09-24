@@ -12,7 +12,7 @@ import io.u2ware.ocpp.v2_1.handlers.CertificateSigned; //-> 2
 import io.u2ware.ocpp.v2_1.handlers.SignCertificate; //-> 2
 import io.u2ware.ocpp.v2_1.handlers.TriggerMessage; //-> 2
 import io.u2ware.ocpp.v2_1.messaging.CSMSCommand;
-import io.u2ware.ocpp.v2_1.messaging.CSMSSession; //-> 4
+import io.u2ware.ocpp.v2_1.messaging.CSMSTransport; //-> 4
 import io.u2ware.ocpp.v2_1.model.CertificateSignedRequest;
 import io.u2ware.ocpp.v2_1.model.CertificateSignedResponse;
 import io.u2ware.ocpp.v2_1.model.SignCertificateRequest;
@@ -29,7 +29,7 @@ public class SecurityA02ServerHandler  implements
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    protected @Autowired(required = false) CSMSSession ocppSession; //
+    protected @Autowired(required = false) CSMSTransport ocppTransport; //
 
     @Override
     public String usecase() {
@@ -62,8 +62,8 @@ public class SecurityA02ServerHandler  implements
         // You can send other OCPP CALL messages using 'ocppTemplate'.
         ///////////////////////////////////////////////////////////////
         CSMSCommand command = 
-            CSMSCommand.ALL.CertificateSigned.buildWith("A03");
-        ocppSession.offer(command, id); //
+            CSMSCommand.ALL.CertificateSigned.buildWith("A02");
+        ocppTransport.offer(command, id); //
     }
 
     @Override/** CertificateSigned [1/4] */
