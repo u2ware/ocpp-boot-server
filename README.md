@@ -11,13 +11,35 @@ If you want to customize a businiss logic, implement the corresponding server ha
 ./mvnw spring-boot:run
 ```
 
-# Admin UX 
+# Console UI 
 
 > http://localhost:8081
 
 ![OCPP-BOOT](./lib/admin.png)
 
 
+
+
+
+# @EnableOcppServer 
+
+```java
+@SpringBootApplication 
+@EnableOcppServer(               //-> 3. 
+    version = OCPPVersion.V2_1,  //-> 2. 
+	path = "/ocpp"               //-> 1. 
+)
+public class Application {
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+}
+```
+1. Path. ocpp clients can connect via URL. [ws://localhost:{port}/ocpp]()
+
+2. versions. V2_1, V2_0_1, V1_6
+
+3. automatically registers the 'ocppTransport' beans according to version: See [Core Concept](#core-concept)
 
 
 
@@ -170,33 +192,6 @@ public class SecurityA02ServerHandler implements
     }
 }
 ```
-
-
-# @EnableOcppServer 
-
-```java
-@SpringBootApplication 
-@EnableOcppServer(               //-> 3. 
-    version = OCPPVersion.V2_1,  //-> 2. 
-	uri = "/your_ocpp"           //-> 1. 
-)
-public class Application {
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-}
-```
-1. URI. ocpp clients can connect via URL.(ws://localhost:18080/your_ocpp)
-
-2. versions. V2_1, V2_0_1, V1_6
-
-3. automatically registers the 'ocppTransport' beans according to version:
-
-|version|beanClass|Description|
-|------|:---|---|
-|v2.1 | [CCMSTransport]()| An object that can offer a [CCMSCommand]().|
-|v2.0.1 | [CCMSTransport]()| An object that can offer a [CCMSCommand]().|
-|v1.6 | [CentralSystemTransport]() | An object that can offer a [CentralSystemCommand]().|
 
 
 
