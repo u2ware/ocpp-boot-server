@@ -9,6 +9,9 @@ All messages for all versions of OCPP are written in Java.
 
 If you want to customize a businiss logic, implement the corresponding server handler.
 
+The client side can use [ocpp-boot-client](https://github.com/u2ware/ocpp-boot-client)
+
+
 # Usage 
 
 ```bash
